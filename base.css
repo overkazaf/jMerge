@@ -1,26 +1,58 @@
 @charset utf-8;
 .toolbar {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 .codearea {
-	margin-top:40px;
+    margin-top: 40px;
 }
 
-.CodeMirror-merge, .CodeMirror-merge .CodeMirror  {
-	height : 600px;
+.CodeMirror-merge,
+.CodeMirror-merge .CodeMirror {
+    height: 600px;
 }
 
-.lfile, .rfile {
-	border : 2px dashed #e5e5e5;
-	text-align: center;
-	min-height:80px;
-	line-height: 80px;
-	color:#000;
-	font-size:32px;
+.lfile,
+.rfile {
+    border: 2px dashed #e5e5e5;
+    text-align: center;
+    min-height: 80px;
+    line-height: 80px;
+    color: #000;
+    font-size: 32px;
 }
 
 .raw-file {
-	max-height: 600px;overflow: auto;
-	font-size:12px;text-align: left;
+    max-height: 600px;
+    overflow: auto;
+    font-size: 12px;
+    text-align: left;
+    display: none;
+}
+
+
+.progress_bar {
+    margin: 10px 0;
+    padding: 3px;
+    border: 2px solid #2b2b2b;
+    border-radius:20px;
+    box-shadow: 2px 2px 5px #bbb;
+    font-size: 14px;
+    line-height: 20px;
+    clear: both;
+    opacity: 0;
+    -moz-transition: opacity 1s linear;
+    -o-transition: opacity 1s linear;
+    -webkit-transition: opacity 1s linear;
+}
+
+.progress_bar.loading {
+    opacity: 1.0;
+}
+
+.progress_bar .percent {
+    background-color: #0f0;
+    border-radius:20px;
+    height: auto;
+    width: 0;
 }
