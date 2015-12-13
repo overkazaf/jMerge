@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="node_modules/codemirror/addon/merge/merge.css">
+    <link rel="stylesheet" type="text/css" href="base.css">
+</head>
+
+<body>
+    <div class="container toolbar">
+        <ul id="toolbar" class="nav nav-pills">
+            <li role="presentation"><div class="btn btn-primary">Start Merging</div> </li>
+            <li role="presentation"><div class="btn btn-danger">Redrop</div></li>
+            <li role="presentation"><div class="btn btn-warning">Show Diffs</div></li>
+            <li role="presentation"><div class="btn btn-success">goNextDiff</div></li>
+            <li role="presentation"><div class="btn btn-success">goPrevDiff</div></li>
+            <li role="presentation"><div class="btn btn-info">Exports</div></li>
+        </ul>
+    </div>
+    <div class="codearea">
+        <div class="col-md-12">
+        	<div id="view"></div>
+			<div class="drops">
+				<div class="lfile drop-zone col-md-offset-1 col-md-5">
+					<div class="label label-info">
+						Drop left file here (editable)
+					</div>
+
+					<div class="raw-file">
+						<h3></h3>
+						<pre class="well"></pre>
+					</div>
+				</div>
+				<div class="rfile drop-zone col-md-offset-1 col-md-5">
+					<div class="label label-success">
+						Drop right file here
+					</div>
+					<div class="raw-file">
+						<h3></h3>
+						<pre class="well"></pre>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/mode/css/css.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/mode/xml/xml.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script type="text/javascript" src="diff_match_patch.js"></script>
+    <script type="text/javascript" src="node_modules/codemirror/addon/merge/merge.js"></script>
+    <script>
+    // Check for the various File API support.
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+	  // Great success! All the File APIs are supported.
+	} else {
+	  alert('The File APIs are not fully supported in this browser.');
+	}
+
+	// merge view
+
+    var value, orig1, orig2, dv, panes = 2,
+        highlight = true,
+        connect = null,
+        collapse = false;
+
+    function preCheck() {
+    	var codes = $('pre');
+    	var title = $('h3');
+    	var t1 = title.eq(0).text();
+    	var t2 = title.eq(1).text();
+    	value = codes.eq(0).text();
+    	orig2 = codes.eq(1).text();
+    	if ($.trim(t1) == '' || $.trim(t2) == '') {
+    		alert('缺少文件， 请添加');
+    		return false;
+    	}
+    	return true;
+    };
+
+    function goDiff (flag) {
+    	if (dv) {
+    		switch (flag) {
+    			case -1:
+    				CodeMirror.execCommand['goPrevDiff'](dv); 
+    				break;
+    			case 1:
+    				CodeMirror.execCommand['goNextDiff'](dv); 
+    				break;
+    		} 
+    	}
+    }
+
+    function initUI() {
+        if (!preCheck()) return;
+        var target = document.getElementById("view");
+        target.innerHTML = "";
+        $('.drops').fadeOut();
+
+        dv = CodeMirror.MergeView(target, {
+            value: value,
+            origLeft: panes == 3 ? orig1 : null,
+            orig: orig2,
+            lineNumbers: true,
+            lineWrapping : true,
+            mode: "text/html",
+            highlightDifferences: highlight,
+            connect: connect,
+            collapseIdentical: collapse
+        });
+
+    }
+
+    function toggleDifferences() {
+        dv.setShowDifferences(highlight = !highlight);
+    }
+
+
+    function handleDragOver(evt) {
+	    evt.stopPropagation();
+	    evt.preventDefault();
+	    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+	  }
+
+	function handleFileSelect (evt) {
+		evt.preventDefault();
+		evt.stopPropagation();
+		var files = evt.dataTransfer.files;
+		if (files.length) {
+			var f = files[0];
+
+			var reader = new FileReader();
+			var x = evt.pageX,
+				y = evt.pageY,
+				load, name;
+			var zones = $('.drop-zone'),target = -1;
+				zones.each(function (i, z) {
+					var l = $(z).offset().left,
+						w = $(z).outerWidth(),
+						t = $(z).offset().top,
+						h = $(z).outerHeight();
+					if (x > l && x < (l+w) && y > t && y < (t+h)) {
+						target = i;
+					}
+				});
+
+				if (target != -1) {
+					var zone = zones.eq(target);
+
+					load = zone.find('pre');
+					name = zone.find('h3');
+				}
+
+			reader.onload = (function (file, load, name){
+				return function (e){
+
+					name.text(file.name)
+					load.text(e.target.result);
+				}
+			})(f, load, name);
+
+			reader.readAsText(f);
+		}
+	}
+
+    window.onload = function() {
+        //value = document.documentElement.innerHTML;
+        value = 'xxxx';
+        // orig1 = "<!doctype html>\n\n";
+        orig2 = 'aaaa';
+        $('#toolbar>li').on('click', function (){
+        	var index = $(this).index();
+        	switch (index) {
+        		case 0 : 
+        			initUI();
+        			break;
+        		case 3 : 
+        			goDiff(1);
+        			break;
+        		case 4 : 
+        			goDiff(-1);
+        			break;
+        	}
+        });
+        document.addEventListener('dragover', handleDragOver, false);
+        document.addEventListener('drop', handleFileSelect, false);
+
+        //initUI();
+    };
+
+    function mergeViewHeight(mergeView) {
+        function editorHeight(editor) {
+            if (!editor) return 0;
+            return editor.getScrollInfo().height;
+        }
+        return Math.max(editorHeight(mergeView.leftOriginal()),
+            editorHeight(mergeView.editor()),
+            editorHeight(mergeView.rightOriginal()));
+    }
+
+    function resize(mergeView) {
+        var height = mergeViewHeight(mergeView);
+        for (;;) {
+            if (mergeView.leftOriginal())
+                mergeView.leftOriginal().setSize(null, height);
+            mergeView.editor().setSize(null, height);
+            if (mergeView.rightOriginal())
+                mergeView.rightOriginal().setSize(null, height);
+
+            var newHeight = mergeViewHeight(mergeView);
+            if (newHeight >= height) break;
+            else height = newHeight;
+        }
+        mergeView.wrap.style.height = height + "px";
+    }
+    </script>
+</body>
+
+</html>
+	

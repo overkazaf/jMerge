@@ -1,0 +1,26 @@
+@charset utf-8;
+.toolbar {
+	margin-top: 20px;
+}
+
+.codearea {
+	margin-top:40px;
+}
+
+.CodeMirror-merge, .CodeMirror-merge .CodeMirror  {
+	height : 600px;
+}
+
+.lfile, .rfile {
+	border : 2px dashed #e5e5e5;
+	text-align: center;
+	min-height:80px;
+	line-height: 80px;
+	color:#000;
+	font-size:32px;
+}
+
+.raw-file {
+	max-height: 600px;overflow: auto;
+	font-size:12px;text-align: left;
+}
