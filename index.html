@@ -41,6 +41,9 @@
                     <div class="label label-info">
                         Drop left file here (editable)
                     </div>
+                    <div class="btn btn-block btn-default abort">
+                    		abort loading file
+                    	</div>
                      <div class="progress_bar"><div class="percent"></div></div>
                     <div class="raw-file">
                         <h3></h3>
@@ -51,6 +54,9 @@
                     <div class="label label-success">
                         Drop right file here
                     </div>
+                    <div class="btn btn-block btn-default abort">
+                    		abort loading file
+                    	</div>
                     <div class="progress_bar"><div class="percent"></div></div>
                     <div class="raw-file">
                         <h3></h3>
@@ -86,6 +92,7 @@
         progress;
 
     function preCheck() {
+    	if($('#toolbar>li:first').find('.btn').attr('disabled') == 'disabled')return false;
         var codes = $('pre');
         var title = $('h3');
         var t1 = title.eq(0).text();
@@ -129,7 +136,9 @@
             connect: connect,
             collapseIdentical: collapse
         });
-
+        
+        var $firstLi = $('#toolbar>li:first');
+        $firstLi.find('.btn').attr('disabled', 'disabled');
     }
 
     function toggleDifferences() {
@@ -183,7 +192,8 @@
                 y = evt.pageY,
                 load, name;
             var zones = $('.drop-zone'),
-                target = -1;
+                target = -1,
+                btnAbort;
             zones.each(function(i, z) {
                 var l = $(z).offset().left,
                     w = $(z).outerWidth(),
@@ -205,8 +215,12 @@
                 zone.find('.raw-file').show();
                 load = zone.find('pre');
                 name = zone.find('h3');
+                btnAbort = zone.find('.abort').show();
             }
 
+            btnAbort.on('click', function (){
+            	reader.abort();
+            });
             reader.onloadstart = function(e) {
 		      zone.find('.progress_bar').addClass('loading');
 		    };

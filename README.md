@@ -8,3 +8,7 @@
 *  revert last change
 *  exports the final file
 
+
+##Planning
+*  use node-webkit to package it
+*  fix the fake death when dropping a huge file into it

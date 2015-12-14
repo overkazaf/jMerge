@@ -23,7 +23,7 @@
 }
 
 .raw-file {
-    max-height: 600px;
+    max-height: 480px;
     overflow: auto;
     font-size: 12px;
     text-align: left;
@@ -56,3 +56,4 @@
     height: auto;
     width: 0;
 }
+.abort {display: none;}
