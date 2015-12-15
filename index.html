@@ -17,10 +17,10 @@
                 <div class="btn btn-primary">Start Merging</div>
             </li>
             <li role="presentation">
-                <div class="btn btn-danger">Redrop</div>
+                <div class="btn btn-danger">Re Merge</div>
             </li>
             <li role="presentation">
-                <div class="btn btn-warning">Show Diffs</div>
+                <div class="btn btn-warning">Show Total Diffs</div>
             </li>
             <li role="presentation">
                 <div class="btn btn-success">goNextDiff</div>
@@ -32,6 +32,11 @@
                 <div class="btn btn-info">Exports</div>
             </li>
         </ul>
+		<hr>
+		<div class="btn-group">
+			<div class="btn btn-default">Redo</div>
+			<div class="btn btn-default">Undo</div>
+		</div>
     </div>
     <div class="codearea">
         <div class="col-md-12">
@@ -110,10 +115,10 @@
         if (dv) {
             switch (flag) {
                 case -1:
-                    CodeMirror.execCommand['goPrevDiff'](dv);
+                    CodeMirror.commands['goPrevDiff'](dv.edit);
                     break;
                 case 1:
-                    CodeMirror.execCommand['goNextDiff'](dv);
+                    CodeMirror.command['goNextDiff'](dv.edit);
                     break;
             }
         }
@@ -251,6 +256,12 @@
                 case 0:
                     initUI();
                     break;
+				case 1:
+					reMergeFiles();
+					break;
+				case 2:
+					showTotalDiffs();
+					break;
                 case 3:
                     goDiff(1);
                     break;
