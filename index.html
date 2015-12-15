@@ -36,6 +36,7 @@
 		<div class="btn-group">
 			<div class="btn btn-default">Redo</div>
 			<div class="btn btn-default">Undo</div>
+			<div class="label label-info" id="totalDiffs" style="display:none;">Total diffs haven't been counted</div>
 		</div>
     </div>
     <div class="codearea">
@@ -71,6 +72,7 @@
             </div>
         </div>
     </div>
+	<hr>
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="node_modules/codemirror/lib/codemirror.js"></script>
@@ -118,7 +120,7 @@
                     CodeMirror.commands['goPrevDiff'](dv.edit);
                     break;
                 case 1:
-                    CodeMirror.command['goNextDiff'](dv.edit);
+                    CodeMirror.commands['goNextDiff'](dv.edit);
                     break;
             }
         }
@@ -282,7 +284,10 @@
     };
 
 	function reMergeFiles(){};
-	function showTotalDiffs(){};
+	function showTotalDiffs(){
+		var counter = $('.CodeMirror-merge-copy').length;
+		$('#totalDiffs').show(300).html(counter + (counter == 1 ? ' diff':' diffs') + ' left');
+	};
 	function exportMergedFile(){};
 
     function mergeViewHeight(mergeView) {
