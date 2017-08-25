@@ -1,7 +1,7 @@
-#jMerge by John Nong
-##Email:overkazaf@gmail.com
+# jMerge by John Nong
+## Email:overkazaf@gmail.com
 
-##Features
+## Features
 *  redo and undo file
 *  drag and drop file into drag-zone area
 *  allow redrop files
@@ -10,6 +10,6 @@
 *  exports the final file
 
 
-##Planning
+## Planning
 *  use node-webkit to package it
 *  fix the fake death when dropping a huge file into it
